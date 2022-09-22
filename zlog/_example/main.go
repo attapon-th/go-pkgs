@@ -1,27 +1,13 @@
-# ZLOG -- zerolog helper
-
-## Referance
-
-- [github.com/rs/zerolog](github.com/rs/zerolog) - **Zero Allocation JSON Logger**
-
-## Install
-
-```shell
-go get -u github.com/attapon-th/go-pkgs/zlog
-```
-
-## Getting Started
-
-### Global Logging Example
-```go
 package main
 
 import (
+	"github.com/attapon-th/go-pkgs/zlog"
 	"github.com/attapon-th/go-pkgs/zlog/log"
 )
 
 func main() {
-	exampleGlobalLogging()
+	exampleNewLogging()
+	// exampleGlobalLogging()
 }
 
 func panicHandler(l zlog.Logger) {
@@ -41,29 +27,6 @@ func exampleGlobalLogging() {
 	defer panicHandler(log.GetLogger())
 	log.Panic().Msg("Panic")
 }
-```
-
-![output](./imgs/output-log.png)
-
-### JSON Logging Example
-```go
-package main
-
-import (
-	"github.com/attapon-th/go-pkgs/zlog"
-	"github.com/attapon-th/go-pkgs/zlog/log"
-)
-
-func main() {
-	exampleNewLogging()
-}
-
-func panicHandler(l zlog.Logger) {
-	x := recover()
-	if x != nil {
-		l.Fatal().Msgf("Fatal --> Recover: %v", x)
-	}
-}
 
 func exampleNewLogging() {
 	l := zlog.NewConsoleJSON()
@@ -79,6 +42,3 @@ func exampleNewLogging() {
 	defer panicHandler(l)
 	l.Panic().Msg("Panic")
 }
-```
-
-![output](./imgs/output-log-json.png)
