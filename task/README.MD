@@ -1,4 +1,4 @@
-# `task` -- Task parallel workflow
+# `task` a goroutine pool
 
 ## Requirement
 -  `go` version 1.18 or more
@@ -12,24 +12,19 @@ Values containing the types defined in this package should not be copied.
 
 ## How to install
 
+```shell
+go get -u github.com/attapon-th/go-pkgs/task
+```
+
 ## How to use
 
-### Import Package
 ```go
 import (
-    "fmt"
-    "log"
-    "time"
-
     "github.com/attapon-th/go-pkgs/task"
 )
 ```
 
-### Create Task
-
-
-
-## [Example](./_example/main.go)
+## [Sample Example](./_example/main.go)
 
 ```go
 package main

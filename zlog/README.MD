@@ -1,6 +1,6 @@
-# ZLOG -- zerolog helper
+# `zlog` -- zerolog helper
 
-## Referance
+## Dependencies package
 
 - [github.com/rs/zerolog](github.com/rs/zerolog) - **Zero Allocation JSON Logger**
 
