@@ -27,7 +27,8 @@ func runTasksSample() {
 	}
 	time.Sleep(1 * time.Second)
 	fmt.Println("Wait...")
-	for t1.GetCount() > 0 {
+
+	for t1.GetCount() > 0 { // check current tasks
 		fmt.Println(t1.GetCount())
 		time.Sleep(time.Second)
 	}

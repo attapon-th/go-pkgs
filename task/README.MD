@@ -35,57 +35,51 @@ import (
 package main
 
 import (
-    "fmt"
-    "log"
-    "time"
-    "github.com/attapon-th/go-pkgs/task"
+	"fmt"
+	"strconv"
+	"time"
+
+	"github.com/attapon-th/go-pkgs/task"
 )
 
 func main() {
-    t1 := runTasksSample("     wait task", 2, 5)
-    t2 := runTasksSample("backgroud task", 2, 10) 
-    defer t1.Close() // close 
-    defer t2.Close()
-
-    go t2.RunTasks() // call run task with goroutine(backgroup process)
-
-    t1.RuRunTasksAndEnd() // wait task t1  complated
-
-    // add worker increment 2 summary = 4
-    t2.SetWorker(4)
-    t2.Wait() // wait backgroup task complated
-
+	// runtime.
+	runTasksSample()
 }
 
-// runTasksSample - Example How to Create Task
-//
-//  @return *task.Tasks
-func runTasksSample(name string, worker, maxTask int) *task.Tasks {
-    t, err := task.NewTasks(worker)
-    if err != nil {
-        log.Fatalln(err)
-    }
-    for i := 0; i < maxTask; i++ {
-        prefix := fmt.Sprintf("Task[%s] %d of %d", name, i+1, maxTask)
-        t.AddTask(funcPrintLoop(prefix, 5))
+func runTasksSample() {
+	t1, _ := task.New(2) // call summit is task start running
 
-    }
-    t.AddTask(t.Close)
-    return t
+	for i := 1; i <= 10; i++ {
+		t1.Submit(funcPrintLoop("Summit Task "+strconv.Itoa(i), 5))
+	}
+	time.Sleep(time.Second)
+	defer t1.Release() // close
+
+	for i := 1; i <= 5; i++ {
+		t1.Submit(funcPrintLoop("Other Task "+strconv.Itoa(i), 5))
+	}
+	time.Sleep(1 * time.Second)
+	fmt.Println("Wait...")
+	for t1.GetCount() > 0 {
+		fmt.Println(t1.GetCount())
+		time.Sleep(time.Second)
+	}
+	t1.Wait()
 }
 
 // funcPrintLoop - Example function to AddTask
 //
-//  @param prefix
-//  @param max
-//  @return func() **recommend return value of func() if function is dynamic parse parameter
-func funcPrintLoop(prefix string, max int) func() {
-    return func() {
-        fmt.Println(prefix, " - is running...")
-        for i := 0; i < max; i++ {
-            time.Sleep(time.Millisecond * 500)
-        }
-        fmt.Println(prefix, " - is completed")
-    }
+//	@return func() **recommend return value of func() if function is dynamic parse parameter
+func funcPrintLoop(prefix string, waitSec int) func() {
+	fmt.Println("Add ", prefix)
+	return func() {
+		// fmt.Println(prefix, " - is running...")
+		for i := 0; i < waitSec; i++ {
+			time.Sleep(time.Millisecond * 500)
+		}
+		fmt.Println(prefix, " - is completed")
+	}
 }
+
 ```
