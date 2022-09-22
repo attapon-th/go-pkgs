@@ -1,3 +1,4 @@
+// Package zlog - helping create zerolog and logrotation
 package zlog
 
 import (
@@ -18,10 +19,7 @@ const (
 )
 
 // Logger - A Logger represents an active logging object
-type Logger struct {
-	cfg Config
-	zerolog.Logger
-}
+type Logger = zerolog.Logger
 
 func init() {
 	zerolog.TimeFieldFormat = TimeFormatLayout
@@ -32,34 +30,35 @@ func init() {
 // NewConsoleJSON - Set logging with console log with json format
 //
 //	@return Logger
-func NewConsoleJSON() Logger {
+func NewConsoleJSON(opts ...Option) Logger {
+	cfg := Config{}
+	cfg.loadOptions(opts...)
 	logger := zerolog.New(os.Stdout).Level(zerolog.DebugLevel).With().Timestamp().Logger()
-	return Logger{Logger: logger}
+	if !cfg.NoCaller {
+		logger = logger.With().Caller().Logger()
+	}
+	return logger
 }
 
 // NewConsole - Set logging with console log
 //
 //	@return *Logger
-func NewConsole() Logger {
-	output := zerolog.ConsoleWriter{Out: os.Stdout, TimeFormat: TimeFormatLayout}
+func NewConsole(opts ...Option) Logger {
+	cfg := Config{}
+	cfg.loadOptions(opts...)
+	output := zerolog.ConsoleWriter{Out: os.Stdout, TimeFormat: TimeFormatLayout, NoColor: cfg.NoColor}
 	logger := zerolog.New(output).Level(zerolog.DebugLevel).With().Timestamp().Logger()
-	return Logger{Logger: logger}
-}
-
-// NewConsoleNoColor - Set logging with console log and set no color
-//
-//	@return *Logger
-func NewConsoleNoColor() Logger {
-	output := zerolog.ConsoleWriter{Out: os.Stdout, TimeFormat: TimeFormatLayout, NoColor: true}
-	logger := zerolog.New(output).Level(zerolog.DebugLevel).With().Timestamp().Logger()
-	return Logger{Logger: logger}
+	if !cfg.NoCaller {
+		logger = logger.With().Caller().Logger()
+	}
+	return logger
 }
 
 // NewLogRollingFile - Set logging with filename. Auto rotation file every day backup 90 day
 //
 //	@param filePath - full path logfile
 //	@return *Logger
-func NewLogRollingFile(filePath string) Logger {
+func NewLogRollingFile(filePath string, opts ...Option) Logger {
 	cfg := Config{
 		ConsoleLoggingEnabled: true,
 		FileLoggingEnabled:    true,
@@ -70,6 +69,7 @@ func NewLogRollingFile(filePath string) Logger {
 		MaxBackups:            90,   // Day
 		MaxAge:                1,    // MaxAge the max age in days to keep a logfile
 	}
+	cfg.loadOptions(opts...)
 	return NewCustomLogRollingFile(cfg)
 }
 
@@ -78,7 +78,8 @@ func NewCustomLogRollingFile(config Config) Logger {
 	var writers []io.Writer
 
 	if config.ConsoleLoggingEnabled {
-		writers = append(writers, NewConsole())
+		ch := zerolog.ConsoleWriter{Out: os.Stdout, TimeFormat: TimeFormatLayout}
+		writers = append(writers, ch)
 	}
 	if config.FileLoggingEnabled {
 		writers = append(writers, newRollingFile(config))
@@ -88,10 +89,7 @@ func NewCustomLogRollingFile(config Config) Logger {
 	// zerolog.SetGlobalLevel(zerolog.DebugLevel)
 	logger := zerolog.New(mw).Level(config.Level).With().Timestamp().Logger()
 
-	return Logger{
-		Logger: logger,
-		cfg:    config,
-	}
+	return logger
 }
 
 func callerHandler(pc uintptr, file string, line int) string {
@@ -104,28 +102,4 @@ func callerHandler(pc uintptr, file string, line int) string {
 	}
 	file = short
 	return file + ":" + strconv.Itoa(line)
-}
-
-// EnableCaller = Caller adds the file:line
-//
-//	@return Logger
-func (l Logger) EnableCaller() Logger {
-	l.Logger = l.With().Caller().Logger()
-	return l
-}
-
-// GetZerolog - get zerolog logging
-//
-//	@return zerolog.Logger
-func (l Logger) GetZerolog() zerolog.Logger {
-	return l.Logger
-}
-
-// SetZerolog - Set logger by zerolog
-//
-//	@param z
-//	@return Logger
-func (l Logger) SetZerolog(z zerolog.Logger) Logger {
-	l.Logger = z
-	return l
 }

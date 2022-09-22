@@ -11,7 +11,7 @@ var (
 )
 
 func init() {
-	l = zlog.NewConsole().EnableCaller()
+	l = zlog.NewConsole(zlog.WithColor(true), zlog.WithCaller(true))
 }
 
 // GetLogger - get global logging

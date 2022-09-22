@@ -1,18 +1,3 @@
-# `zlog` -- zerolog helper
-
-## Dependencies package
-
-- [github.com/rs/zerolog](github.com/rs/zerolog) - **Zero Allocation JSON Logger**
-
-## Install
-
-```shell
-go get -u github.com/attapon-th/go-pkgs/zlog
-```
-
-## Example
-
-```go
 package main
 
 import (
@@ -94,10 +79,3 @@ func ExampleNewLogRollingFile() {
 	}()
 	l.Panic().Msg("Panic")
 }
-```
-
-### Output with color
-![output](./imgs/output-log.png)
-
-### Output with json format
-![output](./imgs/output-log-json.png)
