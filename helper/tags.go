@@ -43,6 +43,14 @@ func New(i any, tag string) *StructTags {
 	return &tags
 }
 
+func ParseField(field reflect.StructField, tag string) (string, string) {
+	tag = strings.ToLower(tag)
+	if tag == "gorm" {
+		return parseTagGORM(field)
+	}
+	return parseTagDefault(field, tag)
+}
+
 func parseTagDefault(field reflect.StructField, tagName string) (string, string) {
 	if tag, ok := field.Tag.Lookup(tagName); ok {
 		if tag == "-" {
