@@ -43,6 +43,7 @@ func New(i any, tag string) *StructTags {
 	return &tags
 }
 
+// ParseField get tag in field by tag
 func ParseField(field reflect.StructField, tag string) (string, string) {
 	tag = strings.ToLower(tag)
 	if tag == "gorm" {
