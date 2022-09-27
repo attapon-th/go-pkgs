@@ -6,7 +6,10 @@ import (
 )
 
 func main() {
-	ExampleNewConsoleColor()
+	logApiAcccess := zlog.NewLogRollingFile("./logs/access.log")
+	logApiAcccess.Write([]byte("logApiAcccess"))
+	// log.GetLogger().Write([]byte("logApiAcccess"))
+	// ExampleNewConsoleColor()
 	// ExampleNewConsoleJSON()
 	// ExampleGlobalLogging()
 	// ExampleNewLogRollingFile()
