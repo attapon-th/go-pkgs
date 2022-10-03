@@ -7,3 +7,5 @@
 
 - [task](./task) - a goroutine pool
 - [zlog](./zlog) - zerolog helper
+- [helper](./helper) - function helper
+- [validstruct](./validstruct) - struct validate
