@@ -1,3 +1,4 @@
+// package main main go
 package main
 
 import (
@@ -11,6 +12,7 @@ func main() {
 	run()
 }
 
+// UserInfo test struct
 type UserInfo struct {
 	ID             int     `json:"id" validate:"required"`
 	Username       string  `json:"username" validate:"required,max=10,lowercase"`
