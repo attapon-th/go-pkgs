@@ -40,11 +40,11 @@ func Exec(command string, args ...string) (output string, err error) {
 	// logger.Debug(fullCommand, " ", strings.Join(commandArgs, " "))
 
 	out, err := cmd.Output()
+	output = strings.Trim(string(out), "\n")
 	if err != nil {
 		err = errors.New(stdErr.String())
 		return
 	}
 
-	output = strings.Trim(string(out), "\n")
 	return
 }
