@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"time"
 
-	jsonitor "github.com/json-iterator/go"
+	"github.com/goccy/go-json"
 	"github.com/rs/zerolog"
 )
 
@@ -23,7 +23,7 @@ type Logger = zerolog.Logger
 
 func init() {
 	zerolog.TimeFieldFormat = TimeFormatLayout
-	zerolog.InterfaceMarshalFunc = jsonitor.Marshal
+	zerolog.InterfaceMarshalFunc = json.Marshal
 	zerolog.CallerMarshalFunc = callerHandler
 }
 
